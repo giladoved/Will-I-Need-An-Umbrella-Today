@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import org.json.JSONArray;
@@ -38,13 +41,9 @@ public class SplashScreen extends Activity {
 		hourlyData = new JSONArray();
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Criteria crta = new Criteria();
-		crta.setAccuracy(Criteria.ACCURACY_FINE);
-		crta.setAltitudeRequired(true);
-		crta.setBearingRequired(true);
-		crta.setCostAllowed(true);
+		crta.setAccuracy(Criteria.ACCURACY_COARSE);
 		crta.setPowerRequirement(Criteria.POWER_LOW);
 		String provider = locationManager.getBestProvider(crta, true);
-		Log.d("", "provider : " + provider);   
 
 		if (provider != null) {
 			locationManager.requestLocationUpdates(provider, 1000, 0,
@@ -73,8 +72,6 @@ public class SplashScreen extends Activity {
 					});
 			location = locationManager.getLastKnownLocation(provider);
 			if (location != null) {
-				Log.d("Gilad", "lastLocation" + location.getLatitude() + ", "
-						+ location.getLongitude());
 				updateWeatherData(location);
 			}
 		}
@@ -84,41 +81,15 @@ public class SplashScreen extends Activity {
 		new Thread() {
 			public void run() {
 				final JSONObject json = RemoteFetch.getJSON(SplashScreen.this, loc);
-				try {
-					JSONObject obj = json.getJSONObject("hourly");
-					hourlyData = obj.getJSONArray("data");
-					if (hourlyData != null) {
-						hourDatas = new HourData[24];
-						JSONObject currentHourData = null;
-						int percentChance = 0;
-						Date time = null;
-						for (int i = 0; i < hourDatas.length; i++){
-							hourDatas[i] = new HourData();
-							try {
-								currentHourData = hourlyData.getJSONObject(i);
-								percentChance = (int)(currentHourData.getDouble("precipProbability") * 100.0);
-								time = new Date((long) currentHourData.getLong("time") * 1000);
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-							hourDatas[i].chance = percentChance;
-							hourDatas[i].time = time;
-							hourDatas[i].jsonObj = currentHourData;
+				if (json != null) {
+					handler.post(new Runnable() {
+						public void run() {
+							Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+							intent.putExtra("json", json.toString());
+							startActivity(intent);
+							finish();
 						}
-												
-						handler.post(new Runnable() {
-							public void run() {
-								Intent i = new Intent(SplashScreen.this, MainActivity.class);
-					            i.putExtra("hourDatas", hourDatas);
-					            startActivity(i);
-					 
-					            // close this activity
-					            finish();
-							}
-						});
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
+					});
 				}
 			}
 		}.start();

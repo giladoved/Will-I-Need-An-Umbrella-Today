@@ -1,10 +1,11 @@
 package com.gilad.oved.willineedanumbrellatoday;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.json.JSONObject;
 
-public class HourData {
+public class HourData implements Serializable {
 	public int chance;
 	public Date time;
 	public String icon;
@@ -15,5 +16,9 @@ public class HourData {
 		time = new Date();
 		icon = "";
 		jsonObj = new JSONObject();
+	}
+	
+	public String toString() {
+		return chance + " + " + time.toString();
 	}
 }

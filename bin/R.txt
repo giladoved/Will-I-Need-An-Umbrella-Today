@@ -101,7 +101,7 @@ int drawable rain 0x7f020021
 int drawable splash 0x7f020022
 int drawable sun 0x7f020023
 int drawable weather 0x7f020024
-int id action_settings 0x7f0b001e
+int id action_settings 0x7f0b001f
 int id adjust_height 0x7f0b0000
 int id adjust_width 0x7f0b0001
 int id book_now 0x7f0b0010
@@ -115,8 +115,9 @@ int id grayscale 0x7f0b0015
 int id holo_dark 0x7f0b0007
 int id holo_light 0x7f0b0008
 int id hybrid 0x7f0b0003
+int id imageView1 0x7f0b001d
 int id match_parent 0x7f0b000e
-int id menu_settings 0x7f0b001d
+int id menu_settings 0x7f0b001e
 int id monochrome 0x7f0b0016
 int id none 0x7f0b0002
 int id normal 0x7f0b0004
